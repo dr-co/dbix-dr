@@ -6,7 +6,7 @@ use utf8;
 use open qw(:std :utf8);
 use lib qw(lib ../lib);
 
-use Test::More tests    => 86;
+use Test::More tests    => 92;
 use Encode qw(decode encode);
 
 
@@ -213,6 +213,28 @@ my @inline_tests = (
     },
     {
         sql         => q{
+            %= hlist ['a', 'b'], @$ary
+        },
+        variables   => [
+            ary     => [ { a => 1 }, { b => 2 },  { a => 3 } ]
+        ],
+        bind_values => [ 1, undef, undef, 2, 3, undef ],
+        like        => qr[^\s*\(\?,\?\)(?:\,\(\?,\?\)){2}\s*$],
+        name        => 'helper "hlist" - a few key names',
+    },
+    {
+        sql         => q{
+            %== hlist ['a', 'b'], @$ary
+        },
+        variables   => [
+            ary     => [ { a => 1 }, { b => 2 },  { a => 3 } ]
+        ],
+        bind_values => [ 1, undef, undef, 2, 3, undef ],
+        like        => qr[^\s*\(\?,\?\)(?:\,\(\?,\?\)){2}\s*$],
+        name        => 'helper "hlist" - a few key names',
+    },
+    {
+        sql         => q{
             % hlist ['a', 'b'], @$ary
         },
         variables   => [
@@ -221,7 +243,6 @@ my @inline_tests = (
         name        => 'helper "hlist" - a few key names',
         died        => 1,
         die_like    => qr("12345"),
-
     },
     {
         sql         => q{
