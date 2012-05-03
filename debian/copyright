@@ -6,7 +6,7 @@ Name: DBIx::DR
 Files: *
 Copyright:
  2011-2012 Dmitry E. Oboukhov <unera@debian.org>
-License: Artistic or GPL-1+
+License: Artistic
 
 License: Artistic
  This program is free software; you can redistribute it and/or modify
@@ -15,11 +15,3 @@ License: Artistic
  On Debian systems, the complete text of the Artistic License can be
  found in `/usr/share/common-licenses/Artistic'.
 
-License: GPL-1+
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 1, or (at your option)
- any later version.
- .
- On Debian systems, the complete text of version 1 of the GNU General
- Public License can be found in `/usr/share/common-licenses/GPL-1'.
