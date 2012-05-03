@@ -13,10 +13,12 @@ PERLVERSION = $(shell grep '^our[[:space:]]\+$$VERSION' $(MAIN_MODULE) \
 
 install/libdbix-dr-perl::
 	test $(DEBVERSION) = $(PERLVERSION)
+	make tardist
 
 clean::
 	rm -f Makefile.old	
 	rm -fr .pc
+	rm -f DBIx-DR-*.tar.gz*
 
 tarball:
 	cd .. && tar \
