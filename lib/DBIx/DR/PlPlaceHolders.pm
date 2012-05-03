@@ -210,6 +210,10 @@ sub bind_values {
 
 1;
 
+=head1 NAME
+
+DBIx::DR::PlPlaceHolders - template converter for L<DBIx::DR>.
+
 =head1 COPYRIGHT
 
  Copyright (C) 2011 Dmitry E. Oboukhov <unera@debian.org>

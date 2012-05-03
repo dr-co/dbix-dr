@@ -37,6 +37,10 @@ sub decamelize($;$) {
 
 1;
 
+=head1 NAME
+
+DBIx::DR::Util - some functions for L<DBIx::DR>.
+
 =head1 COPYRIGHT
 
  Copyright (C) 2011 Dmitry E. Oboukhov <unera@debian.org>

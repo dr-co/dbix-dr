@@ -300,6 +300,10 @@ sub can {
 
 1;
 
+=head1 NAME
+
+DBIx::DR::Iterator - iterator for L<DBIx::DR>.
+
 =head1 SYNOPSIS
 
     my $it = DBIx::DR::Iterator->new($arrayref);

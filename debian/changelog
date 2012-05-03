@@ -1,0 +1,5 @@
+libdbix-dr-perl (0.18-1) unstable; urgency=low
+
+  * Initial release. (Closes: #671341)
+
+ -- Dmitry E. Oboukhov <unera@debian.org>  Thu, 03 May 2012 14:23:32 +0400

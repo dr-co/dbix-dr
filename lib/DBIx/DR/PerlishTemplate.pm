@@ -269,6 +269,10 @@ sub clean_namespace {
 
 1;
 
+=head1 NAME
+
+DBIx::DR::PerlishTemplate - template engine for L<DBIx::DR>.
+
 =head1 COPYRIGHT
 
  Copyright (C) 2011 Dmitry E. Oboukhov <unera@debian.org>
