@@ -1,0 +1,6 @@
+SELECT
+    *
+FROM
+    tbl
+WHERE
+    id IN (<% list @$ids %>)
