@@ -46,3 +46,6 @@ Revision history for Perl extension DBIx::DR
 
 0.19  Fri May 11 09:11:11 MSK 2012
     - All files are licensed by Artistic.
+
+0.20  Fri May 11 10:19:32 MSK 2012
+    - Add license term in Makefile.PL.
