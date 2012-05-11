@@ -22,3 +22,4 @@ t/sql/include.sql.ep
 t/sql/select_ids.sql.ep
 t/sql/unknown_function.sql.ep
 t/sql/usual_select.sql.ep
+LICENSE

@@ -1,3 +1,10 @@
+libdbix-dr-perl (0.19-1) unstable; urgency=low
+
+  * Update copyright (by ftp-masters' notices).
+  * New upstream version.
+
+ -- Dmitry E. Oboukhov <unera@debian.org>  Fri, 11 May 2012 09:03:12 +0400
+
 libdbix-dr-perl (0.18-1) unstable; urgency=low
 
   * Initial release. (Closes: #671341)

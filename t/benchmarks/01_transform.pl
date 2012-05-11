@@ -79,7 +79,7 @@ printf "%s\n", $b3->timestr;
  Copyright (C) 2011 Roman V. Nikolaev <rshadow@rambler.ru>
 
  This program is free software, you can redistribute it and/or
- modify it under the terms of the Artistic License version 2.0.
+ modify it under the terms of the Artistic License.
 
 =cut
 

@@ -43,3 +43,6 @@ Revision history for Perl extension DBIx::DR
 0.18  Thu May  3 14:15:22 MSK 2012
     - make debian package
     - fix hlist helper
+
+0.19  Fri May 11 09:11:11 MSK 2012
+    - All files are licensed by Artistic.

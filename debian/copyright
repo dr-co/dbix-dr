@@ -6,6 +6,7 @@ Name: DBIx::DR
 Files: *
 Copyright:
  2011-2012 Dmitry E. Oboukhov <unera@debian.org>
+ 2011-2012 Roman V. Nikolaev <rshadow@rambler.ru>
 License: Artistic
 
 License: Artistic
