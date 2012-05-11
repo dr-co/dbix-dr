@@ -4,6 +4,7 @@ debian/compat
 debian/control
 debian/copyright
 debian/rules
+debian/watch
 lib/DBIx/DR/ByteStream.pm
 lib/DBIx/DR/Iterator.pm
 lib/DBIx/DR/PerlishTemplate.pm

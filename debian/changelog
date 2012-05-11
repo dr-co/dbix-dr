@@ -1,6 +1,7 @@
 libdbix-dr-perl (0.20-1) unstable; urgency=low
 
   * New upstream version.
+  * Add debian/watch.
 
  -- Dmitry E. Oboukhov <unera@debian.org>  Fri, 11 May 2012 10:19:06 +0400
 
