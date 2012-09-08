@@ -139,10 +139,12 @@ sub quote {
 
 sub _parse_token
 {
-    my ($self, $tpl) = @_;
+    my ($self, $tpl, $prev) = @_;
     my $line_tag       = quotemeta $self->line_tag;
     my $open_tag       = quotemeta $self->open_tag;
     my $close_tag      = quotemeta $self->close_tag;
+
+    my $prev_eol = $prev =~ /\n\s*\z/s;
 
     if ($tpl =~ s{$open_tag(.*?)$close_tag}{}s) {
         return
@@ -151,13 +153,18 @@ sub _parse_token
             { type => 'text', content =>  $' }
         ;
     }
-    if ($tpl =~ s{^(\s*)$line_tag(.*?)$}{$1}sm) {
+    if ($tpl =~ s{^(\s*)$line_tag(.+?)$}{}sm) {
         return
             { type => 'text', content =>  $` . $1 },
             { type => 'perl', content =>  $2, line => 1 },
             { type => 'text', content =>  $' }
-        ;
-        next;
+#                 if length $` or $prev_eol;
+
+#         warn "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+#         return
+#             { type => 'text', content => $1 },
+#             { type => 'text', content => "$line_tag$2$$'" }
+#         ;
     }
 
     return {
@@ -208,14 +215,15 @@ sub _parse {
         for (reverse 0 .. $#tokens) {
             next unless $tokens[$_]{type} eq 'text';
             next if $tokens[$_]{text_only};
-            my @t = $self->_parse_token($tokens[$_]{content});
+            my @t = $self->_parse_token($tokens[$_]{content},
+                $_ ? $tokens[$_ - 1]{content} : "\n"
+            );
             next if @t == 1;
             splice @tokens, $_, 1, grep { length $_->{content} } @t;
             $found_token = 1;
         }
         last unless $found_token;
     }
-
 
     my $sub = join "" => map {
         $self->_put_token($tokens[$_], $_ == $#tokens ? undef : $tokens[$_ + 1])

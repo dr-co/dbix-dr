@@ -101,10 +101,10 @@ my @tests = (
     },
 
     {
-        template    => '<%== "♥" %> + <%= "♥" %>',
+        template    => 'a%<%== "♥" %>-% + <%= "♥" %>',
         prepend     => [],
         args        => [],
-        sql         => qr{^♥ \+ \?$},
+        sql         => qr{^a%♥-% \+ \?$},
         vars        => ['♥'],
         name        => 'UTF8 Immediate and placeholder substitutions',
     },
@@ -162,6 +162,7 @@ for my $t(@tests) {
     } else {
         diag $@ unless ok !$@, 'Rendered without exceptions';
         like $tpl->sql, $t->{sql}, 'Rendering sql';
+        diag $tpl->sql unless
         ok @{ $tpl->variables } ~~ @{ $t->{vars} }, 'Bind variables';
     }
 }
