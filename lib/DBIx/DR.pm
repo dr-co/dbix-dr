@@ -99,6 +99,8 @@ sub select {
         %$args
     );
 
+    croak $req->sql if $args->{'-die'};
+
     my $res;
 
     local $SIG{__DIE__} = sub { croak $self->_dr_decode_err(@_) };

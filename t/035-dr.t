@@ -6,7 +6,7 @@ use utf8;
 use open qw(:std :utf8);
 use lib qw(lib ../lib);
 
-use Test::More tests    => 65;
+use Test::More tests    => 66;
 use Encode qw(decode encode);
 
 
@@ -102,6 +102,19 @@ while(my $v = $res->next) {
 
 my $select_file = catfile $test_dir, 'select_ids.sql.ep';
 ok -r $select_file, 'select.sql is found';
+
+eval {
+    $dbh->select(
+        -f          => 'select_ids',
+        ids         => [ 1, 2 ],
+        -hash       => 'id',
+        -item       => 'my_item_package#new',
+        -iterator   => 'my_iterator_package#new',
+        -die        => 1,
+    )
+};
+
+like $@, qr{SELECT}, '-die statement';
 
 $res = $dbh->select(
     -f          => 'select_ids',
