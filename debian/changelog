@@ -1,3 +1,9 @@
+libdbix-dr-perl (0.21-1) unstable; urgency=low
+
+  * Add option '-die' for all requests.
+
+ -- Dmitry E. Oboukhov <unera@debian.org>  Sun, 06 Jan 2013 02:32:19 +0400
+
 libdbix-dr-perl (0.20-1) unstable; urgency=low
 
   * New upstream version.
