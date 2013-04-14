@@ -1,3 +1,9 @@
+libdbix-dr-perl (0.22-1) unstable; urgency=low
+
+  * Add option '-warn' for all requests.
+
+ -- Dmitry E. Oboukhov <unera@debian.org>  Sun, 14 Apr 2013 21:06:22 +0400
+
 libdbix-dr-perl (0.21-1) unstable; urgency=low
 
   * Add option '-die' for all requests.

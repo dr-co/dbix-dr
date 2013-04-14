@@ -108,6 +108,7 @@ sub select {
         %$args
     );
 
+    carp  _user_sql($req->sql, $req->bind_values) if $args->{'-warn'};
     croak _user_sql($req->sql, $req->bind_values) if $args->{'-die'};
 
     my $res;

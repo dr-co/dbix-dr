@@ -50,3 +50,11 @@ Revision history for Perl extension DBIx::DR
 0.20  Fri May 11 10:19:32 MSK 2012
     - Add license term in Makefile.PL.
     - Add debian/watch.
+
+0.21 Sun, 06 Jan 2013 02:32:19 +0400
+    - Add option '-die' for all requests.
+
+0.22 Sun, 14 Apr 2013 21:06:22 +0400
+    - Add option '-warn' for all requests.
+
+
