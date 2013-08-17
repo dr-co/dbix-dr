@@ -15,7 +15,12 @@ WriteMakefile(
     BUILD_REQUIRES      => {
        'DBD::SQLite'  =>  1.0
     },
-    LICENSE           => 'Artistic License'
+    LICENSE           => 'Artistic License',
+
+    META_MERGE  = {
+        resources => 'https://github.com/dr-co/dbix-dr',
+        bugtracker => 'https://github.com/dr-co/dbix-dr/issues'
+    }
 );
 
 if (open my $file, '+<', 'Makefile') {

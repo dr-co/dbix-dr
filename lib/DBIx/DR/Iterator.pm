@@ -124,7 +124,7 @@ sub exists {
         return 1;
     }
 
-    return exists($self->{fetch}{$name}) or 0;
+    return exists($self->{fetch}{$name}) || 0;
 }
 
 
