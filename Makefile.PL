@@ -18,8 +18,10 @@ WriteMakefile(
     LICENSE           => 'Artistic License',
 
     META_MERGE  => {
-        resources => 'https://github.com/dr-co/dbix-dr',
-        bugtracker => 'https://github.com/dr-co/dbix-dr/issues'
+        resources => {
+            repository => 'https://github.com/dr-co/dbix-dr',
+            bugtracker => 'https://github.com/dr-co/dbix-dr/issues'
+        }
     }
 );
 
