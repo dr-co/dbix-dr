@@ -111,8 +111,14 @@ sub clean_preprepends {
 
 sub immediate {
     my ($self, $str) = @_;
-    if ('DBIx::DR::ByteStream' ~~ Scalar::Util::blessed $str) {
-        $self->{sql} .= $str->content;
+    if (Scalar::Util::blessed $str) {
+        if ('DBIx::DR::ByteStream' eq Scalar::Util::blessed $str) {
+            $self->{sql} .= $str->content;
+        } elsif ($str->can('content')) {
+            $self->{sql} .= $str->content;
+        } else {
+            croak "Can't extract content from " . Scalar::Util::blessed $str;
+        }
     } else {
         $self->{sql} .= $str;
     }
@@ -128,8 +134,10 @@ sub add_bind_value {
 sub quote {
     my ($self, $variable) = @_;
 
-    return $self->immediate($variable)
-        if 'DBIx::DR::ByteStream' ~~ Scalar::Util::blessed $variable;
+    if (Scalar::Util::blessed $variable) {
+        return $self->immediate($variable)
+            if 'DBIx::DR::ByteStream' eq Scalar::Util::blessed $variable;
+    }
 
     $self->{sql} .= '?';
     $self->add_bind_value($variable);

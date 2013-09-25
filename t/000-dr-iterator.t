@@ -6,7 +6,7 @@ use utf8;
 use open qw(:std :utf8);
 use lib qw(lib ../lib);
 
-use Test::More tests    => 66;
+use Test::More tests    => 67;
 use Encode qw(decode encode);
 
 
@@ -50,7 +50,7 @@ while(my $i = $aiter->next) {
         last;
     }
 
-    ok $i->id ~~ $aref->[ $no++ ]{id}, "$no element of array was checked";
+    is $i->id, $aref->[ $no++ ]{id}, "$no element of array was checked";
 }
 
 $no = 0;
@@ -59,7 +59,7 @@ while(my $i = $hiter->next) {
         fail 'Hash bound exceeded';
         last;
     }
-    ok $i->value ~~ $href->{ $i->id }{value},
+    is $i->value, $href->{ $i->id }{value},
         "$no element of hash was checked";
 }
 
@@ -104,6 +104,12 @@ for my $ss ($hiter->grep(value => 3), $hiter->grep(sub{ $_[0]->value == 3 })) {
         'Item constructor';
 }
 
+{
+
+    my ($ss1) = $hiter->grep(value => 3)->all;
+    my $ss2 = $hiter->find(value => 3);
+    is $ss1->value, $ss2->value, 'find';
+}
 
 for my $ss($aiter->grep(id => 2), $aiter->grep(sub { $_[0]->id == 2 })) {
     isa_ok $ss => 'DBIx::DR::Iterator', 'Array subset';

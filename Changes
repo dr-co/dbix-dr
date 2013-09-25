@@ -63,3 +63,6 @@ Revision history for Perl extension DBIx::DR
 0.24 Sat Aug 17 12:35:40 MSK 2013
     - Fix iterator issue https://rt.cpan.org/Public/Bug/Display.html?id=87313
     - Update metainformation
+
+0.25 Wed Sep 25 17:24:00 MSK 2013
+    - Fix all warnings with Perl 5.18

@@ -163,7 +163,7 @@ for my $t(@tests) {
         diag $@ unless ok !$@, 'Rendered without exceptions';
         like $tpl->sql, $t->{sql}, 'Rendering sql';
         diag $tpl->sql unless
-        ok @{ $tpl->variables } ~~ @{ $t->{vars} }, 'Bind variables';
+        is_deeply $tpl->variables, $t->{vars}, 'Bind variables';
     }
 }
 

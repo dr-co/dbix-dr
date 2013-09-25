@@ -274,9 +274,8 @@ for my $t (@inline_tests) {
         skip '$t->{like} was not noticed', 1 unless $t->{like};
         like $res->sql, $t->{like}, 'Result SQL';
     };
-    ok @{ $res->bind_values } ~~ @{ $t->{bind_values} }, 'Result bind_values';
+    is_deeply scalar $res->bind_values, $t->{bind_values}, 'Result bind_values';
 }
-
 
 
 my $file = rel2abs catfile dirname($0), 'sql', 'usual_select.sql.ep';
@@ -347,7 +346,7 @@ for my $t (@file_tests) {
             diag explain {
                 bind_values => scalar $res->bind_values,
                 expected_bind_values => $t->{bind_values}
-            } unless ok @{ $t->{bind_values} } ~~ @{ $res->bind_values },
+            } unless is_deeply $t->{bind_values}, scalar $res->bind_values,
                 'Result bind_values';
 
             skip '$t->{like} was not noticed', 1 unless $t->{like};

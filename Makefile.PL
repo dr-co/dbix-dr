@@ -25,12 +25,3 @@ WriteMakefile(
     }
 );
 
-if (open my $file, '+<', 'Makefile') {
-    my @lines = <$file>;
-    seek $file, 0, 0;
-    truncate $file, 0;
-    for (@lines) {
-        $_ = "TEST_VERBOSE=1\n" if /^TEST_VERBOSE\s*=\s*.*/;
-        print $file $_;
-    }
-}

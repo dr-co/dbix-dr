@@ -1,3 +1,9 @@
+libdbix-dr-perl (0.25-1) unstable; urgency=low
+
+  * Some fixes for Perl 5.18
+
+ -- Dmitry E. Oboukhov <unera@debian.org>  Wed, 25 Sep 2013 16:49:04 +0400
+
 libdbix-dr-perl (0.24-1) unstable; urgency=low
 
   * Update cpan metainfo.

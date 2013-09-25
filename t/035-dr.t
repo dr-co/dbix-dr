@@ -58,7 +58,7 @@ my $res = $dbh->perform(q{
         CREATE TABLE tbl (id INTEGER PRIMARY KEY, value CARCHAR(32))
     }
 );
-ok $res ~~ '0E0', 'Table tbl was created';
+is $res, '0E0', 'Table tbl was created';
 
 my @values = (1, 2, 3, 4, 6, 'abc', 'def');
 for(@values) {
@@ -143,10 +143,10 @@ $res = $dbh->select(
 isa_ok $res => 'MyIteratorPackage', 'Repeat sql from file';
 ok $res->count == 2, 'Rows count has well value';
 
-my @a = $res->all;
+my @a = sort { $a->id <=> $b->id } $res->all;
 ok @a == $res->count, 'Rows count has well value';
-ok $a[0]->value eq $values[0], 'First item';
-ok $a[1]->value eq $values[1], 'Second item';
+is $a[0]->value, $values[0], 'First item';
+is $a[1]->value, $values[1], 'Second item';
 
 
 $res = $dbh->single('SELECT * FROM tbl WHERE id = <%= $id %>', id => 1);

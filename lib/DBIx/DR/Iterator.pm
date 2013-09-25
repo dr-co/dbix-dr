@@ -8,6 +8,15 @@ use DBIx::DR::Util;
 use Carp;
 
 
+# Perl 5.18 refuses smartmatch
+my $is = sub($$) {
+    my ($v1, $v2) = @_;
+    return 0 if defined($v1) xor defined($v2);
+    return 1 unless defined $v1;
+    return $v1 eq $v2;
+};
+
+
 sub new {
     my ($class, $fetch, %opts) = @_;
 
@@ -152,7 +161,7 @@ sub grep : method {
     if ('CODE' eq ref $key) {
         $cb = $key;
     } else {
-        $cb = sub { $_[0]->$key ~~ $value };
+        $cb = sub { $is->($_[0]->$key, $value) };
     }
 
     my $obj;
@@ -222,7 +231,7 @@ sub find : method {
 
     $self->reset;
     while(my $item = $self->next) {
-        return $item if $item->$field ~~ $value;
+        return $item if $is->($item->$field, $value);
     }
     return;
 }
