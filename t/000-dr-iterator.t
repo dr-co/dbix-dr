@@ -6,7 +6,7 @@ use utf8;
 use open qw(:std :utf8);
 use lib qw(lib ../lib);
 
-use Test::More tests    => 67;
+use Test::More tests    => 69;
 use Encode qw(decode encode);
 
 
@@ -151,6 +151,37 @@ ok $item->is_changed, 'Field was changed';
 ok $item->iterator->is_changed, 'Iterator was changed, too';
 
 
+{
+    {
+        package TestItem;
+        sub new {
+            my ($class, $item) = @_;
+            return bless { %$item } => $class;
+        }
+
+        package TestItemD;
+        sub new {
+            my ($class, $item) = @_;
+            return undef if @_ > 2;
+            goto \&TestItem::new;
+        }
+    }
+
+    my @items = (
+        { a => 'b' },
+        { c => 'd' },
+        { d => 'e' }
+    );
+    
+    my $l1 = DBIx::DR::Iterator->new(\@items, -item => 'test_item#new');
+    my $l2 = DBIx::DR::Iterator->new(\@items, -item => 'test_item_d#new');
+    my $l3 = DBIx::DR::Iterator->new(\@items, -item =>
+        'test_item_d#new', -noitem_iter => 1);
+
+    is_deeply [ $l2->all ], [ (undef) x 3 ], 'list2 contains only undef';
+    is_deeply [ $l1->all ], [ $l3->all ],
+        'Third list did not received iterator';
+}
 
 
 

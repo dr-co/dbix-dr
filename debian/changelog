@@ -1,3 +1,9 @@
+libdbix-dr-perl (0.26-1) unstable; urgency=low
+
+  * Add option -noitem_iter (for Mouse objects).
+
+ -- Dmitry E. Oboukhov <unera@debian.org>  Fri, 01 Nov 2013 20:30:59 +0400
+
 libdbix-dr-perl (0.25-1) unstable; urgency=low
 
   * Some fixes for Perl 5.18

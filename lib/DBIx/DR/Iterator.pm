@@ -45,6 +45,7 @@ sub new {
     my ($item_class, $item_constructor) =
         camelize($opts{'-item'} || 'dbix-dr-iterator-item#new');
 
+
     return bless {
         fetch               => $fetch,
         is_hash             => $is_hash,
@@ -54,6 +55,7 @@ sub new {
         item_class          => $item_class,
         item_constructor    => $item_constructor,
         is_changed          => 0,
+        noitem_iter         => $opts{-noitem_iter} ? 1 : 0,
 
     } => ref($class) || $class;
 }
@@ -113,7 +115,10 @@ sub get {
 
     unless(blessed $item) {
         if (my $method = $self->{item_constructor}) {
-            $item = $self->{item_class}->$method($item, $self);
+            $item = $self->{item_class}->$method(
+                $item,
+                ( $self->{noitem_iter} ? () : $self )
+            );
         } else {
             bless $item => $self->{item_class};
         }

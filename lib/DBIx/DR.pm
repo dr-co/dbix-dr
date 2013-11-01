@@ -7,7 +7,7 @@ use DBIx::DR::Util ();
 use DBIx::DR::PlPlaceHolders;
 
 package DBIx::DR;
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 use base 'DBI';
 use Carp;
 $Carp::Internal{ (__PACKAGE__) } = 1;
@@ -139,7 +139,8 @@ sub select {
 
     my ($class, $method) = camelize $iterator;
 
-    return $class->$method($res, -item => $item) if $method;
+    return $class->$method(
+        $res, -item => $item, -noitem_iter => $args->{-noitem_iter}) if $method;
     return bless $res => $class;
 }
 
@@ -301,6 +302,10 @@ Default value defined by L<dr_iterator> argument of B<DBI::connect>.
 =item -noiterator
 
 Do not bless rowset into any class.
+
+=item -noitem_iter
+
+Do not pass iterator as second argument to item constructor.
 
 =item -dbi => HASHREF
 
