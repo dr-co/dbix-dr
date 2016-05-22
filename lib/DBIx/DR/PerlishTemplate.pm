@@ -144,107 +144,118 @@ sub quote {
     return DBIx::DR::ByteStream->new('');
 }
 
-
-sub _parse_token
-{
-    my ($self, $tpl, $prev) = @_;
-    my $line_tag       = quotemeta $self->line_tag;
-    my $open_tag       = quotemeta $self->open_tag;
-    my $close_tag      = quotemeta $self->close_tag;
-
-    my $prev_eol = $prev =~ /\n\s*\z/s;
-
-    if ($tpl =~ s{$open_tag(.*?)$close_tag}{}s) {
-        return
-            { type => 'text', content =>  $` },
-            { type => 'perl', content =>  $1 },
-            { type => 'text', content =>  $' }
-        ;
-    }
-    if ($tpl =~ s{^(\s*)$line_tag(.+?)$}{}sm) {
-        return
-            { type => 'text', content =>  $` . $1 },
-            { type => 'perl', content =>  $2, line => 1 },
-            { type => 'text', content =>  $' }
-#                 if length $` or $prev_eol;
-
-#         warn "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-#         return
-#             { type => 'text', content => $1 },
-#             { type => 'text', content => "$line_tag$2$$'" }
-#         ;
-    }
-
-    return {
-        type        => 'text',
-        content     => $tpl,
-        text_only   => 1,
-    }
-}
-
-sub _put_token {
-    my ($self, $token, $next_token) = @_;
-
-    my $content = $token->{content};
-    my $variable;
-
-    if ($token->{type} eq 'text') {
-        $content =~ s/'/\\'/g;
-        return "immediate('" . $content . "');";
-    }
-
-    my $eot = $token->{line} ? "\n" : '';
-
-    my $immediate_mark = quotemeta $self->immediate_mark;
-    my $quote_mark = quotemeta $self->quote_mark;
-
-    if ($content =~ /^$immediate_mark/) {
-        $content = substr $content, length $self->immediate_mark;
-        return 'immediate(' . $content . ");$eot";
-    }
-
-    if ($content =~ /^$quote_mark/) {
-        $content = substr $content, length $self->quote_mark;
-        return 'quote(' . $content . ");$eot";
-    }
-
-
-    return "$content;$eot" if !$next_token or $next_token->{type} ne 'perl';
-    return $content . $eot;
-}
-
 sub _parse {
     my ($self) = @_;
 
-    my @tokens = { type => 'text', content => $self->template };
+    my $result = '';
 
-    while(1) {
-        my $found_token = 0;
-        for (reverse 0 .. $#tokens) {
-            next unless $tokens[$_]{type} eq 'text';
-            next if $tokens[$_]{text_only};
-            my @t = $self->_parse_token($tokens[$_]{content},
-                $_ ? $tokens[$_ - 1]{content} : "\n"
-            );
-            next if @t == 1;
-            splice @tokens, $_, 1, grep { length $_->{content} } @t;
-            $found_token = 1;
+    my $immediate_mark = $self->immediate_mark;
+    my $quote_mark = $self->quote_mark;
+
+    my $code_cb = sub {
+        my ($t) = @_;
+        return unless defined $t and length $t;
+
+        if ($t =~ /^\Q$immediate_mark\E/) {
+            $result .= join '',
+                'immediate(',
+                    substr($t, length($immediate_mark)),
+                ');';
+            return;
         }
-        last unless $found_token;
-    }
 
-    my $sub = join "" => map {
-        $self->_put_token($tokens[$_], $_ == $#tokens ? undef : $tokens[$_ + 1])
-    } 0 .. $#tokens;
+        if ($t =~ /^\Q$quote_mark\E/) {
+            $result .= join '',
+                'quote(',
+                    substr($t, length($quote_mark)),
+                ');';
+            return;
+        }
 
-    return join '',
+        $result .= "$t;"; # always place ';' at end of code.
+    };
+
+    my $text_cb = sub {
+        my ($content) = @_;
+        return unless defined $content and length $content;
+        $content =~ s/'/\\'/g;
+        $result .= "immediate('" . $content . "');";
+    };
+
+    $self->_parse_ep($self->template, $text_cb, $code_cb);
+
+    $result = join '',
         'package ', $self->namespace, ';',
         'BEGIN { ',
         '*quote = sub { $_PTPL->quote(@_) };',
         '*immediate = sub { $_PTPL->immediate(@_) };',
         '};',
         $self->preprepend,
-        'sub {', $self->prepend, $sub, '}';
+        'sub {', $self->prepend, $result, '}';
+
+    return $result;
+}
+
+sub _parse_ep {
+
+    my ($self, $tpl, $text_cb, $code_cb) = @_;
+
+    #---------------------------------------------------------
+    # единственные три переменные из self
+        my $line_tag = $self->line_tag;
+        my $open_tag = $self->open_tag;
+        my $close_tag = $self->close_tag;
+    # по идее это можно было оформить в виде независимого кода
+    #---------------------------------------------------------
+
+    my @lines = split /\n/, $tpl;
+
+    my $st = 'text';
+    my $code_text;
+
+    for (my $i = 0; $i < @lines; $i++) {
+        local $_ = $lines[$i];
+
+        CODE:
+            if ($st eq 'code') {
+                if (/^(.*?)\Q$close_tag\E(.*)/) {
+                    $_ = $2;
+                    $code_cb->($code_text . $1);
+                    $code_text = undef;
+                    $st = 'text';
+                    goto ANYTEXT;
+                } else {
+                    $code_text .= $_;
+                    $code_text .= "\n";
+                    next;
+                }
+            }
+
+        TEXT_BEGIN:
+            if (/^(\s*)\Q$line_tag\E(.*)/) {
+                $text_cb->($1);
+                if ($i < $#lines) {
+                    $code_cb->("$2\n");
+                } else {
+                    $code_cb->($2);
+                }
+                next;
+            }
+
+        ANYTEXT:
+            if (/^(.*?)\Q$open_tag\E(.*)/) {
+                $_ = $2;
+                $text_cb->($1);
+                $code_text = '';
+                $st = 'code';
+                goto CODE;
+            } else {
+                $text_cb->($_);
+                $text_cb->("\n") if $i < $#lines;
+                next;
+            }
+    }
+    $text_cb->("<%" . $code_text) if defined $code_text and length $code_text;
 }
 
 
@@ -298,4 +309,8 @@ DBIx::DR::PerlishTemplate - template engine for L<DBIx::DR>.
  modify it under the terms of the Artistic License.
 
 =cut
+
+
+
+
 
