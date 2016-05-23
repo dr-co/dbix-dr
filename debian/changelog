@@ -1,4 +1,4 @@
-libdbix-dr-perl (0.28-1) nowtaxi; urgency=medium
+libdbix-dr-perl (0.28-1) unstable; urgency=medium
 
   * Add some tests, fix finish %# comment in latest string.
 
