@@ -1,3 +1,12 @@
+libdbix-dr-perl (0.27-1) unstable; urgency=medium
+
+  * New upstream release:
+    + Parser was rewritten using state-machine (one pass parser).
+    + Add `stacktrace` helper to default helpers list.
+    + Bump Standards-Version to 3.9.6.
+
+ -- Dmitry E. Oboukhov <unera@debian.org>  Mon, 23 May 2016 17:13:56 +0300
+
 libdbix-dr-perl (0.26-1) unstable; urgency=low
 
   * Add option -noitem_iter (for Mouse objects).

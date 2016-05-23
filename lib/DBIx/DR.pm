@@ -7,7 +7,7 @@ use DBIx::DR::Util ();
 use DBIx::DR::PlPlaceHolders;
 
 package DBIx::DR;
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 use base 'DBI';
 use Carp;
 $Carp::Internal{ (__PACKAGE__) } = 1;
@@ -529,6 +529,34 @@ Includes the other SQL-part.
 =head3 Example
 
     % include 'other_sql', argument1 => 1, argument2 => 2;
+
+
+=head2 stacktrace
+
+Returns perl stacktrace. You can use the helper for debug Your code.
+The helper receives the following position-arguments:
+
+=over
+
+=item (first) $skip (default = 0)
+
+How many frames to skip.
+
+=item (second) $dept (default = 0)
+
+How many frames to print.
+
+=item (third) $separator (default ", ")
+
+Separator between stackframes.
+
+=back
+
+=head3 Examples
+
+    /* <%= stacktrace %> */
+
+    /* <%= stacktrace $skip, $depth, $separator %> */
 
 
 =head1 User's helpers

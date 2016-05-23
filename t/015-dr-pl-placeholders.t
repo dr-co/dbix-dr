@@ -6,7 +6,7 @@ use utf8;
 use open qw(:std :utf8);
 use lib qw(lib ../lib);
 
-use Test::More tests    => 92;
+use Test::More tests    => 95;
 use Encode qw(decode encode);
 
 
@@ -319,7 +319,13 @@ my @file_tests = (
         file        => 'unknown_function.sql.ep',
         died        => 1,
         die_like    => qr{unknown_function\.sql\.ep line 3},
-    }
+    },
+    {
+        file        => 'stacktrace.sql.ep',
+        variables   => [ ],
+        bind_values => [ ],
+        like        => qr(/\* t/015-dr-pl-placeholders\.t:\d+ \*/),
+    },
 );
 
 

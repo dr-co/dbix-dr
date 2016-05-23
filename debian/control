@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 7), cdbs,
  libdbi-perl,
  libdbd-sqlite3-perl,
  libmouse-perl
-Standards-Version: 3.9.2
+Standards-Version: 3.9.6
 Priority: extra
 VCS-Browser: https://github.com/unera/dbix-dr
 

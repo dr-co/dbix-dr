@@ -85,6 +85,26 @@ sub BUILD {
             $tpl->add_bind_value(map { values %$_ } @args);
             return DBIx::DR::ByteStream->new('');
         },
+
+        stacktrace => sub {
+            my ($tpl, $skip, $depth, $sep) = @_;
+
+            $depth ||= 32;
+            $skip ||= 0;
+
+            $skip += 7;
+            $depth += 6;
+            $sep = ", " unless defined $sep;
+
+            my @stack;
+
+            for (my $i = $skip ? $skip - 1 : 0; $i < $depth; $i++) {
+                my @line = caller $i;
+                last unless @line;
+                push @stack => sprintf '%s:%s', @line[1,2];
+            }
+            return DBIx::DR::ByteStream->new(join $sep, @stack);
+        },
     );
 
     $self;

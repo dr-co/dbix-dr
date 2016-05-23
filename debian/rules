@@ -20,10 +20,11 @@ clean::
 	rm -fr .pc
 	rm -f DBIx-DR-*.tar.gz*
 
-tarball:
+tarball: clean
 	cd .. && tar \
 		--exclude=debian \
 		--exclude=.git \
-		-czf libdbix-dr-perl_$(DEBVERSION).orig.tar.gz \
-		libdbix-dr-perl-$(DEBVERSION)
+		--transform='s,^.*?/,libdbix-dr-perl-$(PERLVERSION),S' \
+		-czvf libdbix-dr-perl_$(DEBVERSION).orig.tar.gz \
+		`basename $(CURDIR)`
 
