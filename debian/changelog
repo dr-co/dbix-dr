@@ -1,3 +1,9 @@
+libdbix-dr-perl (0.28-1) nowtaxi; urgency=medium
+
+  * Add some tests, fix finish %# comment in latest string.
+
+ -- Dmitry E. Oboukhov <unera@debian.org>  Mon, 23 May 2016 18:44:44 +0300
+
 libdbix-dr-perl (0.27-1) unstable; urgency=medium
 
   * New upstream release:

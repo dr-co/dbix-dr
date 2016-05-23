@@ -6,7 +6,7 @@ use utf8;
 use open qw(:std :utf8);
 use lib qw(lib ../lib);
 
-use Test::More tests    => 46;
+use Test::More tests    => 50;
 use Encode qw(decode encode);
 
 
@@ -29,6 +29,14 @@ ok $tpl, 'DBIx::DR::PerlishTemplate->new';
 
 
 my @tests = (
+    {
+        template    => q{%#},
+        prepend     => [],
+        args        => [],
+        sql         => qr{^$}s,
+        vars        => [],
+        name        => 'Commented last line',
+    },
     {
         template    => q{
             %= 50 - 11

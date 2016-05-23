@@ -191,7 +191,7 @@ sub _parse {
         '*immediate = sub { $_PTPL->immediate(@_) };',
         '};',
         $self->preprepend,
-        'sub {', $self->prepend, $result, '}';
+        'sub {', $self->prepend, $result, "\n}";
 
     return $result;
 }
