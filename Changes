@@ -70,3 +70,7 @@ Revision history for Perl extension DBIx::DR
 0.26 Mon May 23 18:22:42 MSK 2016
     - Parser was rewritten using state-machine (one pass parser).
     - Add `stacktrace` helper to default helpers list.
+
+0.29 Mon May 30 15:55:06 MSK 2016
+    - Fix tests for windows.
+    - Update MANIFEST by new files.

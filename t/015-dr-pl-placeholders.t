@@ -278,7 +278,7 @@ for my $t (@inline_tests) {
 }
 
 
-my $file = rel2abs catfile dirname($0), 'sql', 'usual_select.sql.ep';
+my $file = rel2abs catfile(catfile(dirname($0), 'sql'), 'usual_select.sql.ep');
 
 my @file_tests = (
     {
