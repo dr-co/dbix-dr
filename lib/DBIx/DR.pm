@@ -581,6 +581,41 @@ be a list of required keys. Places each group into brackets.
 and B<bindlist> will contain all B<inserts> values.
 
 
+=head2 type and blob
+
+Provides bind_param's types (C<blob> as shortcut for C<type SQL_BLOB => $v>),
+
+=head3 Example
+
+    INSERT INTO
+        "photos"
+            (
+                "id",
+                "png"
+            )
+    VALUES
+        (
+            <%= $id %>,
+            <%= type SQL_BLOB => $png %>
+        )
+
+    
+The same:
+
+    INSERT INTO
+        "photos"
+            (
+                "id",
+                "png"
+            )
+    VALUES
+        (
+            <%= $id %>,
+            <%= blob $png %>
+        )
+
+See L<DBI/bind_param> for more help.
+
 =head2 include
 
 Includes the other SQL-part.
