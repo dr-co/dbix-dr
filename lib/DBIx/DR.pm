@@ -108,6 +108,11 @@ sub _bind_values($$) {
                 my $type = $_->DBI_TYPE;
                 my $value = $_->DBI_VALUE;
 
+                    
+                if (Scalar::Util::looks_like_number $type) {
+                    $sth->bind_param($no++, $value => { TYPE => $type });
+                    next;
+                }
                 $type = "DBI::$type";
                 no strict 'refs';
                 $sth->bind_param($no++, $value => { TYPE => $type->() });
