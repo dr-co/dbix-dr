@@ -6,6 +6,7 @@ package DBIx::DR::PlPlaceHolders;
 use Mouse;
 extends 'DBIx::DR::PerlishTemplate';
 use DBIx::DR::ByteStream;
+use DBIx::DR::BindValue;
 
 use Carp ();
 use File::Spec ();
@@ -57,6 +58,19 @@ sub BUILD {
             $tpl->immediate(join ',' => map '?', @args);
             $tpl->add_bind_value(@args);
             return DBIx::DR::ByteStream->new('');
+        },
+
+        type => sub {
+            my ($tpl, $sql_type, $value) = @_;
+            $tpl->add_bind_value(DBIx::DR::BindValue->new($sql_type, $value));
+            return DBIx::DR::ByteStream->new('?');
+        },
+
+        blob => sub {
+            my ($tpl, $value) = @_;
+            utf8::encode $value if utf8::is_utf8 $value;
+            $tpl->add_bind_value(DBIx::DR::BindValue->new(SQL_BLOB => $value));
+            return DBIx::DR::ByteStream->new('?');
         },
 
         hlist => sub {

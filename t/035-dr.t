@@ -6,7 +6,7 @@ use utf8;
 use open qw(:std :utf8);
 use lib qw(lib ../lib);
 
-use Test::More tests    => 67;
+use Test::More tests    => 69;
 use Encode qw(decode encode);
 
 
@@ -129,7 +129,7 @@ $res = $dbh->select(
 );
 
 ok 'HASH' eq ref $res->{fetch}, 'SELECT was done';
-ok $res->count == 2, 'Rows count has well value';
+is $res->count, 2, 'Rows count has well value';
 ok $res->get(1)->value eq $values[0], 'First item';
 ok $res->get(2)->value eq $values[1], 'Second item';
 
@@ -184,6 +184,22 @@ my @lines = <$fh>;
 my ($line_real) = grep { $lines[$_] =~ /UNKNOWN_FUNCTION/ } 0 .. $#lines;
 $line_real++;
 cmp_ok $line, '==', $line_real, 'Exception point';
+
+
+note 'blobs';
+for my $blob (encode utf8 => 'привет медвед') {
+    my $res = $dbh->single(
+        'SELECT <%= type SQL_BLOB => $blob %> AS "blob"',
+        blob => $blob
+    );
+    is $res->blob, encode(utf8 => 'привет медвед'), 'blob body (helper type)';
+    
+    $res = $dbh->single(
+        'SELECT <%= blob $blob %> AS "blob"',
+        blob => 'привет, медвед'
+    );
+    is $res->blob, encode(utf8 => 'привет, медвед'), 'blob body (helper blob)';
+}
 
 
 package MyItemPackage;

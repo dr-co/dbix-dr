@@ -5,6 +5,7 @@ use warnings;
 use DBIx::DR::Iterator;
 use DBIx::DR::Util ();
 use DBIx::DR::PlPlaceHolders;
+use Scalar::Util ();
 
 package DBIx::DR;
 our $VERSION = '0.29';
@@ -92,11 +93,29 @@ sub _dr_extract_args_ep {
 }
 
 
-
 sub _user_sql($@) {
     my ($sql, @bv) = @_;
     $sql =~ s/\?/'$_'/ for @bv;
     return $sql;
+}
+
+sub _bind_values($$) {
+    my ($sth, $req) = @_;
+    my $no = 1;
+    for ($req->bind_values) {
+        if (Scalar::Util::blessed $_) {
+            if ($_->can('DBI_TYPE') and $_->can('DBI_VALUE')) {
+                my $type = $_->DBI_TYPE;
+                my $value = $_->DBI_VALUE;
+
+                $type = "DBI::$type";
+                no strict 'refs';
+                $sth->bind_param($no++, $value => { TYPE => $type->() });
+                next;
+            }
+        }
+        $sth->bind_param($no++, $_);
+    }
 }
 
 
@@ -111,28 +130,50 @@ sub select {
     carp  _user_sql($req->sql, $req->bind_values) if $args->{'-warn'};
     croak _user_sql($req->sql, $req->bind_values) if $args->{'-die'};
 
-    my $res;
+    my ($res, $hkey);
+    if (exists $args->{-hash}) {
+        $hkey = $args->{-hash};
+        $res = {};
+    } else {
+        $res = [];
+    }
 
     local $SIG{__DIE__} = sub { croak $self->_dr_decode_err(@_) };
 
-    if (exists $args->{-hash}) {
-        $res = $self->selectall_hashref(
-                $req->sql,
-                $args->{-hash},
-                $args->{-dbi},
-                $req->bind_values
-            );
+    if (my $sth = $self->prepare($req->sql, $args->{-dbi} // {})) {
+        _bind_values($sth, $req);
+        
+        if ($sth->execute) {
+            while (my $row = $sth->fetchrow_hashref) {
+                if (exists $args->{-hash}) {
+                    $res->{ $row->{$hkey} } = $row;
+                } else {
+                    push @$res => $row;
+                }
+            }
+        }
 
-    } else {
-        my $dbi = $args->{-dbi} // {};
-        croak "argument '-dbi' must be HASHREF or undef"
-            unless 'HASH' eq ref $dbi;
-        $res = $self->selectall_arrayref(
-                $req->sql,
-                { %$dbi, Slice => {} },
-                $req->bind_values
-            );
+        $sth->finish;
     }
+
+#     if (exists $args->{-hash}) {
+#         $res = $self->selectall_hashref(
+#                 $req->sql,
+#                 $args->{-hash},
+#                 $args->{-dbi},
+#                 $req->bind_values
+#             );
+
+#     } else {
+#         my $dbi = $args->{-dbi} // {};
+#         croak "argument '-dbi' must be HASHREF or undef"
+#             unless 'HASH' eq ref $dbi;
+#         $res = $self->selectall_arrayref(
+#                 $req->sql,
+#                 { %$dbi, Slice => {} },
+#                 $req->bind_values
+#             );
+#     }
 
 
     return $res unless $iterator;
@@ -155,13 +196,26 @@ sub single {
     croak _user_sql($req->sql, $req->bind_values) if $args->{'-die'};
 
     local $SIG{__DIE__} = sub { croak $self->_dr_decode_err(@_) };
-    my $res = $self->selectrow_hashref(
-            $req->sql,
-            $args->{-dbi},
-            $req->bind_values
-        );
+   
+    my $res;
+    
+    if (my $sth = $self->prepare($req->sql, $args->{-dbi} // {})) {
+        _bind_values($sth, $req);
+        
+        if ($sth->execute) {
+            croak "More than one rows fetched by dbh->single" if $sth->rows > 1;
+            $res = $sth->fetchrow_hashref;
+        }
 
-    return unless $res;
+        $sth->finish;
+    }
+#     my $res = $self->selectrow_hashref(
+#             $req->sql,
+#             $args->{-dbi},
+#             $req->bind_values
+#         );
+
+    return undef unless $res;
 
     my ($class, $method) = camelize $item;
     return $class->$method($res) if $method;
@@ -179,12 +233,17 @@ sub perform {
     croak _user_sql($req->sql, $req->bind_values) if $args->{'-die'};
 
     local $SIG{__DIE__} = sub { croak $self->_dr_decode_err(@_) };
-    my $res = $self->do(
-            $req->sql,
-            $args->{-dbi},
-            $req->bind_values
-        );
-    return $res;
+    my $res; 
+    if (my $sth = $self->prepare($req->sql, $args->{-dbi} // {})) {
+        _bind_values($sth, $req);
+        
+        if ($sth->execute) {
+            $res = $sth->rows == 0 ? '0E0' : $sth->rows;
+        }
+
+        $sth->finish;
+    }
+    $res;
 }
 
 
