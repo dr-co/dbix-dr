@@ -19,7 +19,6 @@ has     variables       => (is => 'ro', isa => 'ArrayRef');
 
 has     template        => (is => 'rw', isa => 'Str',   default => '');
 has     template_file   => (is => 'rw', isa => 'Str',   default => '');
-has     utf8_open       => (is => 'rw', isa => 'Bool',  default => 1);
 
 has     stashes         => (is => 'ro', isa => 'ArrayRef');
 has     pretokens       => (is => 'ro', isa => 'ArrayRef');
@@ -29,6 +28,7 @@ has     namespace       => (is => 'rw', isa => 'Str',
                         default => 'DBIx::DR::PerlishTemplate::Sandbox');
 
 
+has sql_utf8     => (is => 'ro', isa => 'Bool', default => 1);
 sub _render {
     my ($_PTPL) = @_;
     my $_PTSUB;
@@ -84,10 +84,13 @@ sub render_file {
     my ($self, $file, @args)  = @_;
     croak "File '@{[ $file // 'undef' ]}' not found or readable"
         unless -r $file;
-    open my $fh, '<', $file;
+    open my $fh, '<:raw', $file;
     my $data;
 
     { local $/; $data = <$fh> }
+
+    utf8::decode $data if $self->sql_utf8;
+
     $self->{parsed_template} = '';
     $self->template_file($file);
     $self->template($data);

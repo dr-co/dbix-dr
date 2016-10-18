@@ -1,3 +1,9 @@
+libdbix-dr-perl (0.29-1) unstable; urgency=medium
+
+  * Add option dr_sql_utf8 (default is true).
+
+ -- Dmitry E. Oboukhov <unera@debian.org>  Wed, 19 Oct 2016 00:31:53 +0300
+
 libdbix-dr-perl (0.28-1) unstable; urgency=medium
 
   * Add some tests, fix finish %# comment in latest string.

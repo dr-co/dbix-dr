@@ -29,7 +29,7 @@ sub connect {
 
     $dbh->{"private_DBIx::DR_template"} = DBIx::DR::PlPlaceHolders->new(
         sql_dir     => $attr->{dr_sql_dir},
-
+        sql_utf8    => $attr->{dr_sql_utf8} // 1
     );
 
     $dbh->{"private_DBIx::DR_dr_decode_errors"} = $attr->{dr_decode_errors};
@@ -271,6 +271,10 @@ Directory path to seek sql files (If You use dedicated SQLs).
 =head2 dr_decode_errors
 
 Decode database errors into utf-8
+
+=head2 dr_sql_utf8
+
+Default value: C<true>. If true, it will open sql files with option C<:utf8>.
 
 =head1 METHODS
 
