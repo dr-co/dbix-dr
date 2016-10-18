@@ -1,4 +1,4 @@
-libdbix-dr-perl (0.29-1) unstable; urgency=medium
+libdbix-dr-perl (0.30-1) unstable; urgency=medium
 
   * Add option dr_sql_utf8 (default is true).
 
