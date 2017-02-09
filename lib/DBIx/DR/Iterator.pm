@@ -377,6 +377,14 @@ It will bless (or construct) row into specified class. See below.
 
 By default it constructs L<DBIx::DR::Iterator::Item> objects.
 
+=item -noitem_iter => TRUE|FALSE
+
+Don't pass iterator to item constructor.
+
+=item -keep_blessed => TRUE|FALSE
+
+Force store blessed item into iterator. Default value is C<true>.
+
 =back
 
 =head2 count
