@@ -45,6 +45,9 @@ sub new {
     my ($item_class, $item_constructor) =
         camelize($opts{'-item'} || 'dbix-dr-iterator-item#new');
 
+    my $keep_blessed = $opts{-keep_blessed};
+    $keep_blessed //= 1;
+
 
     return bless {
         fetch               => $fetch,
@@ -55,8 +58,8 @@ sub new {
         item_class          => $item_class,
         item_constructor    => $item_constructor,
         is_changed          => 0,
+        keep_blessed        => $keep_blessed,
         noitem_iter         => $opts{-noitem_iter} ? 1 : 0,
-
     } => ref($class) || $class;
 }
 
@@ -119,9 +122,18 @@ sub get {
                 $item,
                 ( $self->{noitem_iter} ? () : $self )
             );
+            
+            if (blessed($item) and $self->{keep_blessed}) {
+                if ($self->{is_array}) {
+                    $self->{fetch}[ $name ] = $item;
+                } else {
+                    $self->{fetch}{ $name } = $item;
+                }
+            }
         } else {
             bless $item => $self->{item_class};
         }
+
     }
     return $item;
 }

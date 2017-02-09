@@ -1,3 +1,10 @@
+libdbix-dr-perl (0.31-1) unstable; urgency=medium
+
+  * Add option -keep_blessed (The module works properly with Moose/Mouse
+    lists).
+
+ -- Dmitry E. Oboukhov <unera@debian.org>  Thu, 09 Feb 2017 19:28:53 +0300
+
 libdbix-dr-perl (0.30-1) unstable; urgency=medium
 
   * Add option dr_sql_utf8 (default is true).

@@ -14,6 +14,7 @@ lib/DBIx/DR/Util.pm
 Makefile.PL
 MANIFEST
 t/000-dr-iterator.t
+t/005-dr-iterator-keep-bless.t
 t/010-dr-perl-ish-template.t
 t/015-dr-pl-placeholders.t
 t/020-util.t

@@ -74,3 +74,6 @@ Revision history for Perl extension DBIx::DR
 0.29 Mon May 30 15:55:06 MSK 2016
     - Fix tests for windows.
     - Update MANIFEST by new files.
+
+0.31 Thu Feb  9 19:27:49 MSK 2017
+    - Add option -keep_blessed (works properly with Moose object lists).
