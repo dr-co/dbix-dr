@@ -75,5 +75,8 @@ Revision history for Perl extension DBIx::DR
     - Fix tests for windows.
     - Update MANIFEST by new files.
 
+0.30 Wed Oct 19 00:31:53 MSK 2016
+    - Add option dr_sql_utf8 (default is true).
+
 0.31 Thu Feb  9 19:27:49 MSK 2017
     - Add option -keep_blessed (works properly with Moose object lists).
