@@ -1,3 +1,9 @@
+libdbix-dr-perl (0.32-2) nowtaxi; urgency=medium
+
+  * Nowtaxi upload.
+
+ -- Dmitry E. Oboukhov <unera@debian.org>  Tue, 18 Apr 2017 23:22:49 +0300
+
 libdbix-dr-perl (0.32-1) unstable; urgency=low
 
   * Add iterator:pop method.
