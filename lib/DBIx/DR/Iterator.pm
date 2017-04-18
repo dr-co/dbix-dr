@@ -107,7 +107,7 @@ sub get {
         if @_ <= 1 or !defined($name);
     my $item;
     if ($self->{is_array}) {
-        croak "Element number must be digit value" unless $name =~ /^\d+$/;
+        croak "Element number must be digit value" unless $name =~ /^-?\d+$/;
         croak "Element number is out of arraybound"
             if $name >= $self->{count} || $name < -$self->{count};
         $item = $self->{fetch}[ $name ];
@@ -232,7 +232,7 @@ sub push : method {
         $self->{count}++ unless exists $self->{fetch}{$k};
         $self->{fetch}{$k} = $v;
         $self->is_changed(1);
-        return;
+        return $self->get($k);
     }
 
     croak "Value isn't defined" unless defined $k;
@@ -240,6 +240,18 @@ sub push : method {
         unless 'HASH' eq ref $k or blessed $k;
     push @{ $self->{fetch} }, $k;
     $self->{count}++;
+    return $self->get(-1);
+}
+
+sub pop : method {
+    my ($self) = @_;
+    croak "Can't use pop method with HASHREF iterator"  if $self->{is_hash};
+    return undef unless $self->{count};
+
+    my $item = $self->get(-1);
+    pop @{ $self->{fetch} };
+    $self->{count}--;
+    $item;
 }
 
 

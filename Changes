@@ -80,3 +80,6 @@ Revision history for Perl extension DBIx::DR
 
 0.31 Thu Feb  9 19:27:49 MSK 2017
     - Add option -keep_blessed (works properly with Moose object lists).
+
+0.32 Tue Apr 18 22:54:10 MSK 2017
+    - Add iterator:pop method.

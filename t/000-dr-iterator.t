@@ -6,7 +6,7 @@ use utf8;
 use open qw(:std :utf8);
 use lib qw(lib ../lib);
 
-use Test::More tests    => 69;
+use Test::More tests    => 70;
 use Encode qw(decode encode);
 
 
@@ -172,7 +172,7 @@ ok $item->iterator->is_changed, 'Iterator was changed, too';
         { c => 'd' },
         { d => 'e' }
     );
-    
+
     my $l1 = DBIx::DR::Iterator->new(\@items, -item => 'test_item#new');
     my $l2 = DBIx::DR::Iterator->new(\@items, -item => 'test_item_d#new');
     my $l3 = DBIx::DR::Iterator->new(\@items, -item =>
@@ -183,7 +183,36 @@ ok $item->iterator->is_changed, 'Iterator was changed, too';
         'Third list did not received iterator';
 }
 
+subtest 'iterator push, pop', sub {
+    plan tests => 6;
+    {
+        package TestPushItem;
+        sub new {
+            my ($class, $item) = @_;
+            return bless { %$item } => $class;
+        }
+    }
+    my @items = (
+        { a => 'b' },
+        { c => 'd' },
+        { d => 'e' }
+    );
 
+    my $list = DBIx::DR::Iterator->new(
+        [@items],
+        -item           => 'test_push_item#new',
+        -noitem_iter    => 1,
+    );
+
+    is_deeply $list->push({ f => 'h' }), TestPushItem->new({ f => 'h' }), 'iterator push';
+    is_deeply $list->get(-1), TestPushItem->new({ f => 'h' }), 'added element';
+    is $list->count, 4, 'count';
+
+    
+    is_deeply $list->pop, TestPushItem->new({ f => 'h' }), 'iterator pop';
+    is_deeply $list->get(-1), TestPushItem->new({ d => 'e' }), 'last element';
+    is $list->count, 3, 'count';
+};
 
 =head1 COPYRIGHT
 
