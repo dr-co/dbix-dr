@@ -15,7 +15,7 @@ WriteMakefile(
     BUILD_REQUIRES      => {
        'DBD::SQLite'  =>  1.0
     },
-    LICENSE           => 'Artistic License',
+    LICENSE           => 'artistic_2',
 
     META_MERGE  => {
         resources => {
@@ -24,4 +24,3 @@ WriteMakefile(
         }
     }
 );
-
