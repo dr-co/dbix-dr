@@ -612,7 +612,7 @@ function.
 =head1 VCS
 
 The project is placed git repo on github:
-L<https://github.com/unera/dbix-dr/>
+L<https://github.com/dr-co/dbix-dr/>
 
 =cut
 
